@@ -6,7 +6,7 @@ from functools import wraps, partial
 from copy import deepcopy
 from jinja2.utils import generate_lorem_ipsum
 
-from .data.buildlogs import RedisBuildLogs
+from data.buildlogs import RedisBuildLogs
 
 
 logger = logging.getLogger(__name__)
