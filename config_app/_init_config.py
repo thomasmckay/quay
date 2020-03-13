@@ -14,12 +14,20 @@ TEMPLATE_DIR = os.path.join(ROOT_DIR, "templates/")
 IS_KUBERNETES = "KUBERNETES_SERVICE_HOST" in os.environ
 
 
-def _get_version_number_changelog():
-    try:
-        with open(os.path.join(ROOT_DIR, "CHANGELOG.md")) as f:
-            return re.search(r"(v[0-9]+\.[0-9]+\.[0-9]+)", f.readline()).group(0)
-    except IOError:
-        return ""
+def _get_version():
+    """
+    Version is determined in following order:
+    1. environment variable QUAY_RELEASE
+    2. git describe --tags
+    """
+    version = os.environ.get("QUAY_RELEASE", "")
+    if not version or version == "":
+        try:
+            version = subprocess.check_output(["git", "describe", "--tags"]).strip()
+        except (OSError, subprocess.CalledProcessError, Exception):
+            version = "unknown"
+
+    return version
 
 
 def _get_git_sha():
@@ -34,5 +42,5 @@ def _get_git_sha():
     return "unknown"
 
 
-__version__ = _get_version_number_changelog()
+__version__ = _get_version()
 __gitrev__ = _get_git_sha()

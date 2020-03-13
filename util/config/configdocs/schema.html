@@ -417,6 +417,26 @@ Schema for Red Hat Quay<ul class="level0">
 </div>
 </li>
 <li class="schema item">
+<div class="name">MIRROR_INTERVAL_OPTIONS</div>
+<div class="type">[array]</div>
+<div class="required">required</div>
+<div class="docs">
+<div class="title"></div>
+<div class="description">The options that users can select for expiration of tags in their namespace (if enabled)</div>
+<div class="minItems">Min Items: None</div>
+</div>
+</li>
+<li class="schema item">
+<div class="name">DEFAULT_MIRROR_INTERVAL</div>
+<div class="type">[string]</div>
+<div class="required">required</div>
+<div class="docs">
+<div class="title"></div>
+<div class="description">The default, configurable tag expiration time for time machine. Defaults to `2w`.</div>
+<div class="pattern">Pattern: ^[0-9]+(w|m|d|h|s)$</div>
+</div>
+</li>
+<li class="schema item">
 <div class="name">FEATURE_BITBUCKET_BUILD</div>
 <div class="type">[boolean]</div>
 <div class="required"></div>

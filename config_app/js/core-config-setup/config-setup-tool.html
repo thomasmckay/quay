@@ -270,6 +270,34 @@
           <div class="config-bool-field" binding="config.REPO_MIRROR_TLS_VERIFY" ng-if="config.FEATURE_REPO_MIRROR">
             Require HTTPS and verify certificates of Quay registry during mirror.
           </div>
+          <table class="config-table">
+            <!-- This `ng-if` true is *required* to create a new scope so that the <form> inside
+              the config-list-field doesn't try to submit the *outer* form when the Add button
+              is clicked. This is highly stupid, but until we figure out a better way, such it
+              shall be.
+            -->
+            <tr ng-if="true">
+              <td>Allowed interval periods:</td>
+              <td>
+                <span class="config-list-field" item-title="Mirror Interval Period"
+                  binding="config.MIRROR_INTERVAL_OPTIONS" item-pattern="[0-9]+(m|w|h|d|s)"></span>
+                <div class="help-text">
+                  The interval periods allowed for configuration. The default mirror interval *must* be in this list.
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Default interval period:</td>
+              <td>
+                <span class="config-string-field" binding="config.DEFAULT_MIRROR_INTERVAL"
+                  pattern="[0-9]+(m|w|h|d|s)"></span>
+                <div class="help-text">
+                  The default mirror interval period for all namespaces (users and organizations). Must be expressed in a
+                  duration string form: <code>30m</code>, <code>1h</code>, <code>1d</code>, <code>2w</code>.
+                </div>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
 
