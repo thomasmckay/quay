@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8:8.1
+FROM registry.access.redhat.com/ubi8:8.2
 LABEL maintainer "thomasmckay@redhat.com"
 
 ENV OS=linux \
@@ -51,14 +51,10 @@ RUN alternatives --set python /usr/bin/python3 && \
     cp -r $QUAYDIR/static/webfonts $QUAYDIR/config_app/static/webfonts
 
 
-RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash - && \
-    yum install -y nodejs && \
-    curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
-    rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg && \
-    yum install -y yarn && \
-    yarn install --ignore-engines && \
-    yarn build && \
-    yarn build-config-app
+RUN yum install -y npm && \
+    npm install --ignore-engines && \
+    npm build && \
+    npm build-config-app
 
 
 ENV JWTPROXY_VERSION=0.0.3
