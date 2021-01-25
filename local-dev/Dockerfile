@@ -37,10 +37,6 @@ RUN INSTALL_PKGS="\
     yum -y clean all
 
 
-ENV JWTPROXY_VERSION=0.0.3
-RUN curl -fsSL -o /usr/local/bin/jwtproxy "https://github.com/coreos/jwtproxy/releases/download/v${JWTPROXY_VERSION}/jwtproxy-${OS}-${ARCH}" && \
-    chmod +x /usr/local/bin/jwtproxy
-
 ENV PUSHGATEWAY_VERSION=1.0.0
 RUN curl -fsSL "https://github.com/prometheus/pushgateway/releases/download/v${PUSHGATEWAY_VERSION}/pushgateway-${PUSHGATEWAY_VERSION}.${OS}-${ARCH}.tar.gz" | \
     tar xz "pushgateway-${PUSHGATEWAY_VERSION}.${OS}-${ARCH}/pushgateway" && \

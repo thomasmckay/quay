@@ -71,11 +71,6 @@ RUN curl -O https://storage.googleapis.com/golang/go1.10.linux-amd64.tar.gz && \
     cp /gocode/bin/cfssl /bin/cfssl && \
     rm -rf /gocode && rm -rf /usr/local/go
 
-# Install jwtproxy
-ENV JWTPROXY_VERSION=0.0.3
-RUN curl -fsSL -o /usr/local/bin/jwtproxy https://github.com/coreos/jwtproxy/releases/download/v$(JWTPROXY_VERSION)/jwtproxy-$(OS)-$(ARCH) && \
-    chmod +x /usr/local/bin/jwtproxy
-
 # Install pushgateway
 ENV PUSHGATEWAY_VERSION=1.0.0
 RUN curl -fsSL https://github.com/prometheus/pushgateway/releases/download/$(PUSHGATEWAY_VERSION)/pushgateway-$(PUSHGATEWAY_VERSION).$(OS)-$(ARCH).tar.gz | \

@@ -8,7 +8,6 @@ set -e
 Files=(
 	'util/ipresolver/aws-ip-ranges.json'
 	'revision_head'
-	'local-dev/jwtproxy_conf.yaml'
 	'local-dev/mitm.cert'
 	'local-dev/mitm.key'
 	'local-dev/quay.kid'

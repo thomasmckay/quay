@@ -270,7 +270,6 @@ class ImplementedSecurityScannerAPI(SecurityScannerAPIInterface):
         Issues an HTTP request to the security endpoint.
         """
         url = _join_api_url(endpoint, self._config.get("SECURITY_SCANNER_API_VERSION", "v1"), path)
-        signer_proxy_url = self._config.get("JWTPROXY_SIGNER", "localhost:8081")
 
         logger.debug("%sing security URL %s", method.upper(), url)
         resp = self._client.request(
@@ -281,7 +280,6 @@ class ImplementedSecurityScannerAPI(SecurityScannerAPIInterface):
             timeout=timeout,
             verify=MITM_CERT_PATH,
             headers=DEFAULT_HTTP_HEADERS,
-            proxies={"https": "https://" + signer_proxy_url, "http": "http://" + signer_proxy_url},
         )
         if resp.status_code // 100 != 2:
             raise Non200ResponseException(resp)
