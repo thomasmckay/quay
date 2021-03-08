@@ -19,6 +19,7 @@ from auth.auth_context import get_authenticated_user
 from auth.permissions import SuperUserPermission
 from data.database import ServiceKeyApprovalType
 from data.logs_model import logs_model
+from data import model
 from endpoints.api import (
     ApiResource,
     nickname,

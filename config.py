@@ -493,6 +493,9 @@ class DefaultConfig(ImmutableConfig):
     # requests. If none jwt signing will not occur
     SECURITY_SCANNER_V4_PSK = None
 
+    # Simplified registry experience
+    FEATURE_REGISTRY_ENGINE = False
+
     # Repository mirror
     FEATURE_REPO_MIRROR = False
 

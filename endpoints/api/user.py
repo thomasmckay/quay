@@ -4,7 +4,9 @@ Manage the current user.
 
 import logging
 import json
+from random import SystemRandom
 import recaptcha2
+import string
 
 from flask import request, abort
 from flask_login import logout_user
@@ -57,6 +59,7 @@ from endpoints.api import (
     define_json_response,
     RepositoryParamResource,
     page_support,
+    verify_not_prod,
 )
 from endpoints.exception import NotFound, InvalidToken, InvalidRequest, DownstreamIssue
 from endpoints.api.subscribe import subscribe
@@ -543,6 +546,78 @@ class User(ApiResource):
             get_authenticated_user(), all_queues, namespace_gc_queue
         )
         return "", 204
+
+
+@resource("/v1/user/initializeXXXXXX")
+@internal_only
+class InitializeUser(ApiResource):
+
+    schemas = {
+        "InitializeUser": {
+            "type": "object",
+            "description": "Fields which must be specified for a new user.",
+            "required": [
+                "username",
+                "password",
+            ],
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "The user's username",
+                },
+                "password": {
+                    "type": "string",
+                    "description": "The user's password",
+                },
+                "email": {
+                    "type": "string",
+                    "description": "The user's email address",
+                },
+            },
+        },
+    }
+
+    @verify_not_prod
+    @nickname("initializeUser")
+    @validate_json_request("InitializeUser")
+    def post(self):
+        """
+        Create initial user in an empty database
+        """
+
+        # Ensure that we are using database auth.
+        if app.config["AUTHENTICATION_TYPE"] != "Database":
+            raise request_error(message="Cannot initialize user in a non-database auth system")
+
+        if model.user.select().count() != 0:
+            raise request_error(message="Cannot initialize user in a non-empty database")
+
+        user_data = request.get_json()
+        try:
+            prompts = model.user.get_default_user_prompts(features)
+            new_user = model.user.create_user(
+                user_data["username"],
+                user_data["password"],
+                user_data.get("email"),
+                auto_verify=True,
+                email_required=features.MAILING,
+                is_possible_abuser=False,
+                prompts=prompts,
+            )
+            success, headers = common_login(new_user.uuid)
+            if not success:
+                raise request_error(message="Could not login. Failed to initialize user")
+
+            return {
+                "username": user_data["username"],
+                "email": user_data.get("email"),
+                "password": user_data["password"],
+                "encrypted_password": authentication.encrypt_user_password(user_data["password"]).decode(
+                    "ascii"
+                ),
+            }, 200, headers
+        except model.user.DataModelException as ex:
+            raise request_error(exception=ex)
 
 
 @resource("/v1/user/private")

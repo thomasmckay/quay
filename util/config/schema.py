@@ -982,6 +982,12 @@ CONFIG_SCHEMA = {
             "description": "Whether to enable support for repository mirroring. Defaults to False",
             "x-example": False,
         },
+        # Feature Flag: Support Repository Mirroring.
+        "FEATURE_REGISTRY_ENGINE": {
+            "type": "boolean",
+            "description": "Whether to run as simplified registry engine. Defaults to False",
+            "x-example": False,
+        },
         "REPO_MIRROR_TLS_VERIFY": {
             "type": "boolean",
             "description": "Require HTTPS and verify certificates of Quay registry during mirror. Defaults to True",

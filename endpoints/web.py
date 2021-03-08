@@ -32,6 +32,7 @@ from app import (
     get_app_url,
     instance_keys,
     storage,
+    authentication,
 )
 from auth import scopes
 from auth.auth_context import get_authenticated_user
@@ -897,3 +898,53 @@ def redirect_to_namespace(namespace):
         return redirect(url_for("web.org_view", path=namespace))
     else:
         return redirect(url_for("web.user_view", path=namespace))
+
+
+@web.route("/api/v1/user/initialize", methods=["POST"])
+def userInitialize():
+    """
+    Create initial user in an empty database
+    """
+
+    # Ensure that we are using database auth.
+    if app.config["AUTHENTICATION_TYPE"] != "Database":
+        response = jsonify({"message": "Cannot initialize user in a non-database auth system"})
+        response.status_code = 400
+        return response
+
+    if model.user.get_active_user_count() != 0:
+        response = jsonify({"message": "Cannot initialize user in a non-empty database"})
+        response.status_code = 400
+        return response
+
+    user_data = request.get_json()
+    try:
+        prompts = model.user.get_default_user_prompts(features)
+        new_user = model.user.create_user(
+                user_data["username"],
+                user_data["password"],
+                user_data.get("email"),
+                auto_verify=True,
+                email_required=features.MAILING,
+                is_possible_abuser=False,
+                prompts=prompts,
+        )
+        success, headers = common_login(new_user.uuid)
+        if not success:
+            response = jsonify({"message": "Could not login. Failed to initialize user"})
+            response.status_code = 400
+            return response
+
+        response = jsonify({
+            "username": user_data["username"],
+            "email": user_data.get("email"),
+            "password": user_data["password"],
+            "encrypted_password": authentication.encrypt_user_password(user_data["password"]).decode(
+                "ascii"
+            ),
+        })
+        response.status = 200
+        return response
+    except model.user.DataModelException as ex:
+        logger.exception(ex)
+        abort(500, message=ex.message)

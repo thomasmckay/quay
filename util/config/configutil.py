@@ -43,6 +43,7 @@ def add_enterprise_config_defaults(config_obj, current_secret_key):
     config_obj["FEATURE_ACI_CONVERSION"] = config_obj.get("FEATURE_ACI_CONVERSION", False)
     config_obj["FEATURE_APP_REGISTRY"] = config_obj.get("FEATURE_APP_REGISTRY", False)
     config_obj["FEATURE_REPO_MIRROR"] = config_obj.get("FEATURE_REPO_MIRROR", False)
+    config_obj["FEATURE_REGISTRY_ENGINE"] = config_obj.get("FEATURE_REGISTRY_ENGINE", False)
 
     # Default repo mirror config.
     config_obj["REPO_MIRROR_TLS_VERIFY"] = config_obj.get("REPO_MIRROR_TLS_VERIFY", True)
